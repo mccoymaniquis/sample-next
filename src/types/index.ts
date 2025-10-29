@@ -1,5 +1,3 @@
-export * from "./datatable";
-
 export type ResultsT<T> = {
   status: number;
   data?: T;
