@@ -1,0 +1,28 @@
+stages:
+  - lint
+  - build-check
+
+lint:
+  stage: lint
+  image: node:22
+  tags:
+    - LargeRunner
+  script:
+    - npm ci
+    - npm run lint
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master")'
+      when: always
+
+build-check:
+  stage: build-check
+  image: node:22
+  tags:
+    - LargeRunner
+  script:
+    - rm -rf node_modules
+    - npm ci
+    - npm run build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && ($CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "uat" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master")'
+      when: always
